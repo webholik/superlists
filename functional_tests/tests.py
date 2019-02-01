@@ -73,7 +73,6 @@ class NewVisitorTest(LiveServerTestCase):
 
         # There is a still a text box inviting her to add another item
         # She enters "Kill all Mormons pretenders"
-        self.fail("Finish the tests")
 
         # The page updates again and now shows two items in the list
 
