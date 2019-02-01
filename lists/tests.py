@@ -11,8 +11,33 @@ class HomePageTest(TestCase):
 
     def test_can_save_a_POST_request(self):
         response = self.client.post('/', data={'item_next':'New item'})
-        self.assertIn('New item', response.content.decode())
-        self.assertTemplateUsed(response,'home.html')
+
+        self.assertEqual(Item.objects.count(),1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'New item')
+
+    def test_redirects_after_POST(self):
+        response = self.client.post('/', data={'item_next':'New item'})
+        self.assertEqual(response.status_code,302)
+        self.assertEqual(response['location'], '/')
+
+        # self.assertIn('New item', response.content.decode())
+        # self.assertTemplateUsed(response,'home.html')
+
+    def test_only_save_items_when_necessary(self):
+        response = self.client.get('/')
+        self.assertEqual(Item.objects.count(),0,
+                         "Saving empty items for GET request"
+                         )
+
+    def test_display_all_list_items(self):
+        Item.objects.create(text='item1')
+        Item.objects.create(text='item2')
+
+        response = self.client.get('/')
+
+        self.assertIn('item1', response.content.decode())
+        self.assertIn('item2', response.content.decode())
 
 class ItemModelTest(TestCase):
 
@@ -31,4 +56,3 @@ class ItemModelTest(TestCase):
         first_saved_item = saved_items[0]
         second_saved_item = saved_items[1]
         self.assertEqual(first_item.text, first_saved_item.text)
-        self.assertEqual(second_item.text, second_saved_item.text)

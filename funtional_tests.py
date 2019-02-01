@@ -11,8 +11,7 @@ class NewVisitorTest(unittest.TestCase):
     def check_list_in_table(self, text):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertIn(text, [row for row in rows])
-
+        self.assertIn(text, [row.text for row in rows])
 
     def tearDown(self):
         self.browser.quit()
