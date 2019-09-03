@@ -9,10 +9,10 @@ MAX_WAIT = 1
 
 
 class NewVisitorTest(LiveServerTestCase):
+    options = webdriver.FirefoxOptions()
     def setUp(self):
-        options = webdriver.FirefoxOptions();
-        options.add_argument('--headless')
-        self.browser = webdriver.Firefox(options=options)
+        self.options.add_argument('--headless')
+        self.browser = webdriver.Firefox(options=self.options)
 
     def wait_and_check_list_in_table(self, text):
         start_time = time.time()
@@ -101,7 +101,7 @@ class NewVisitorTest(LiveServerTestCase):
         ## We start a new browser session to make sure no info
         ## is shared between different users
         self.browser.quit()
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Firefox(options=self.options)
 
         # New user should not see anything from the previous user's lists
         self.browser.get(self.live_server_url)
