@@ -7,7 +7,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.common.exceptions import WebDriverException
 import os
 
-MAX_WAIT = 1
+MAX_WAIT = 3
 
 
 class NewVisitorTest(StaticLiveServerTestCase):
