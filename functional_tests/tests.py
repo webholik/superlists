@@ -5,6 +5,7 @@ import time
 # from django.test import LiveServerTestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.common.exceptions import WebDriverException
+import os
 
 MAX_WAIT = 1
 
@@ -12,6 +13,10 @@ MAX_WAIT = 1
 class NewVisitorTest(StaticLiveServerTestCase):
     options = webdriver.FirefoxOptions()
     def setUp(self):
+        staging_server = os.environ.get('STAGING_SERVER')
+        if staging_server:
+            self.live_server_url = 'http://' + staging_server
+            
         self.options.add_argument('--headless')
         self.browser = webdriver.Firefox(options=self.options)
 
@@ -133,7 +138,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
+            270,
             delta=10
         )
 
@@ -143,7 +148,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertAlmostEqual(
             inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
+            270,
             delta=10
         )
     
