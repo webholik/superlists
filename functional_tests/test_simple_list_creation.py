@@ -1,40 +1,8 @@
+from functional_tests.base import FunctionalTest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import unittest
-import time
-# from django.test import LiveServerTestCase
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium.common.exceptions import WebDriverException
-import os
 
-MAX_WAIT = 3
-
-
-class NewVisitorTest(StaticLiveServerTestCase):
-    options = webdriver.FirefoxOptions()
-    def setUp(self):
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-            
-        self.options.add_argument('--headless')
-        self.browser = webdriver.Firefox(options=self.options)
-
-    def wait_and_check_list_in_table(self, text):
-        start_time = time.time()
-        while True:
-            try:
-                table = self.browser.find_element_by_id('id_list_table')
-                rows = table.find_elements_by_tag_name('tr')
-                self.assertIn(text, [row.text for row in rows])
-                return
-            except (AssertionError, WebDriverException) as e:
-                if time.time() - start_time > MAX_WAIT:
-                    raise e
-                time.sleep(0.5)
-
-    def tearDown(self):
-        self.browser.quit()
+class NewVisitorTest(FunctionalTest):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # User goes to app homepage
@@ -130,29 +98,3 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertNotIn('Buy peacock feathers', page_text)
 
         # Satisfied both users leave
-
-    def test_layout_and_styling(self):
-        self.browser.get(self.live_server_url)
-        self.browser.set_window_size(1024, 768)
-
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            270,
-            delta=10
-        )
-
-        inputbox.send_keys('testing')
-        inputbox.send_keys(Keys.ENTER)
-        self.wait_and_check_list_in_table('1: testing')
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            270,
-            delta=10
-        )
-    
-
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
