@@ -1,0 +1,12 @@
+[Unit]
+Description=Gunicorn sever for SITENAME
+
+[Service]
+Restart=on-failure
+User=ankit
+WorkingDirectory=/home/ankit/sites/SITENAME/source
+ExecStart=/home/ankit/sites/SITENAME/virtualenv/bin/gunicorn --bind unix:/tmp/SITENAME.socket \
+    superlists.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
