@@ -4,32 +4,16 @@ from lists.views import home_page
 from django.http import HttpRequest
 from lists.models import Item,List
 from django.utils.html import escape
+from lists.forms import ItemForm
 
 class HomePageTest(TestCase):
     def test_uses_home_template(self):
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'home.html')
 
-    # def test_can_save_a_POST_request(self):
-    #     response = self.client.post('/', data={'item_text':'New item'})
-
-    #     self.assertEqual(Item.objects.count(),1)
-    #     new_item = Item.objects.first()
-    #     self.assertEqual(new_item.text, 'New item')
-
-    # def test_redirects_after_POST(self):
-    #     response = self.client.post('/', data={'item_text':'New item'})
-    #     self.assertEqual(response.status_code,302)
-    #     self.assertEqual(response['location'], '/lists/01/')
-
-    #     # self.assertIn('New item', response.content.decode())
-    #     # self.assertTemplateUsed(response,'home.html')
-
-    # def test_only_save_items_when_necessary(self):
-    #     response = self.client.get('/')
-    #     self.assertEqual(Item.objects.count(),0,
-    #                      "Saving empty items for GET request"
-    #                      )
+    def test_home_page_uses_item_form(self):
+        response = self.client.get('/')
+        self.assertIsInstance(response.context['form'], ItemForm)
 
 
 
