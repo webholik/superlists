@@ -1,5 +1,6 @@
 from django.test import TestCase
 from lists.models import Item,List
+from lists.forms import ItemForm
 from django.core.exceptions import ValidationError
 
 class ListAndItemModelTest(TestCase):
@@ -40,3 +41,11 @@ class ListAndItemModelTest(TestCase):
     def test_absolute_url(self):
         list_ = List.objects.create()
         self.assertEqual(list_.get_absolute_url(), f'/lists/{list_.id}/')
+
+    def test_form_saves_handles_saving_to_a_list(self):
+        list_ = List.objects.create()
+        form = ItemForm(data = {'text': 'Sample'})
+        new_item = form.save(for_list=list_)
+        self.assertEqual(new_item, Item.objects.first())
+        self.assertEqual(new_item.text, 'Sample')
+        self.assertEqual(new_item.list, list_)
