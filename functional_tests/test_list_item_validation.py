@@ -30,4 +30,4 @@ class ItemValidationTest(FunctionalTest):
         # So he gives up his devious ways and enters the actual text in the input
         self.browser.find_element_by_id('id_new_item').send_keys('Buy cigarette')
         self.browser.find_element_by_id('id_new_item').send_keys(Keys.ENTER)
-        self.wait_and_check_list_in_table('1: Buy cigarette')
+        self.wait_and_check_list_in_table('2: Buy cigarette')
