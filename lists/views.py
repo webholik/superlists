@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 def home_page(request):
     # if request.method == 'POST':
-    #     Item.objects.ecreate(text=request.POST['item_next'])
+    #     Item.objects.ecreate(text=request.POST['item_text'])
     #     return redirect('/lists/01/')
     # else:
     return render(request, 'home.html')
@@ -18,7 +18,7 @@ def view_list(request, list_id):
     # items = Item.objects.filter(list=list_)
     if request.method == 'POST':
         try:
-            item = Item(text=request.POST['item_next'], list=list_)
+            item = Item(text=request.POST['item_text'], list=list_)
             item.full_clean()
             item.save()
             return redirect(list_)
@@ -30,7 +30,7 @@ def view_list(request, list_id):
 
 def new_list(request):
     list_ = List.objects.create()
-    item = Item(text=request.POST['item_next'], list=list_)
+    item = Item(text=request.POST['item_text'], list=list_)
     try:
         item.full_clean()
         item.save()
