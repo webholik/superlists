@@ -12,7 +12,6 @@ class ItemForm(forms.models.ModelForm):
                 'placeholder':'Enter a to-do item',
                 'class': 'form-control input-lg',
                 'id': 'id_new_item',
-                # 'name': 'item_text'
             }),
         }
 
