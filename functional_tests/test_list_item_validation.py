@@ -17,7 +17,7 @@ class ItemValidationTest(FunctionalTest):
         # He then enter some text in the input box and presses Enter, which works as expected
         self.browser.find_element_by_id('id_new_item').send_keys('Buy milk')
         self.browser.find_element_by_id('id_new_item').send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Buy milk')
+        self.wait_and_check_list_in_table('1: Buy milk')
 
         # Perversely he tries again to submit an empty list but this time again he gets the
         # error message
@@ -30,4 +30,4 @@ class ItemValidationTest(FunctionalTest):
         # So he gives up his devious ways and enters the actual text in the input
         self.browser.find_element_by_id('id_new_item').send_keys('Buy cigarette')
         self.browser.find_element_by_id('id_new_item').send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table('1: Buy cigarette')
+        self.wait_and_check_list_in_table('1: Buy cigarette')
