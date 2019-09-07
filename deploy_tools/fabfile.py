@@ -14,6 +14,7 @@ def deploy():
     _update_virtualenv(source_folder)
     _update_static_files(source_folder)
     _update_database(source_folder)
+    _restart_gunicorn(env.host)
 
 
 def _create_directory_substructure_if_necessary(site_folder):
@@ -59,3 +60,7 @@ def _update_static_files(source_folder):
 def _update_database(source_folder):
     run(f'cd {source_folder}'
         '&& ../virtualenv/bin/python manage.py migrate --noinput')
+
+def _restart_gunicorn(site_url):
+    service_name = 'gunicorn-' + site_url + '.service'
+    run(f'sudo systemctl restart {service_name}')
