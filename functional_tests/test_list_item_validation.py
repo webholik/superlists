@@ -25,7 +25,7 @@ class ItemValidationTest(FunctionalTest):
         self.browser.find_element_by_id('id_new_item').send_keys(Keys.ENTER)
         self.wait_and_check_list_in_table('1: Buy milk')
 
-        # Perversely he tries again to submit an empty list but this time again he gets 
+        # Perversely he tries again to submit an empty list but this time again he gets
         # stopped by the browser
         self.browser.find_element_by_id('id_new_item').send_keys(Keys.ENTER)
         self.wait_for(lambda: self.browser.find_element_by_css_selector(
@@ -37,3 +37,20 @@ class ItemValidationTest(FunctionalTest):
             'id_new_item').send_keys('Buy cigarette')
         self.browser.find_element_by_id('id_new_item').send_keys(Keys.ENTER)
         self.wait_and_check_list_in_table('2: Buy cigarette')
+
+    def test_cannot_add_duplicate_list_items(self):
+        self.browser.get(self.live_server_url)
+        textbox = self.browser.find_element_by_id('id_new_item')
+        textbox.send_keys('Buy Milk')
+        textbox.send_keys(Keys.ENTER)
+
+        self.wait_and_check_list_in_table('1: Buy Milk')
+
+        textbox = self.browser.find_element_by_id('id_new_item')
+        textbox.send_keys('Buy Milk')
+        textbox.send_keys(Keys.ENTER)
+
+        self.wait_for(lambda: self.assertEqual(
+            self.browser.find_element_by_css_selector('.has_error').text,
+            "You've already got this in your list"))
+
