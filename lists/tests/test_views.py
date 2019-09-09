@@ -3,7 +3,7 @@ from django.urls import resolve
 from django.http import HttpRequest
 from lists.models import Item,List
 from django.utils.html import escape
-from lists.forms import ItemForm, EMPTY_ITEM_ERROR, DUPLICATE_ITEM_ERROR
+from lists.forms import ExistingListItemForm, ItemForm, EMPTY_ITEM_ERROR, DUPLICATE_ITEM_ERROR
 from unittest import skip
 
 class HomePageTest(TestCase):
@@ -77,14 +77,16 @@ class ListViewTest(TestCase):
 
     def test_displays_item_form(self):
         list_ = List.objects.create()
-        response = self.client.get(f'/lists/{list_.id}/')
-        self.assertIsInstance(response.context['form'], ItemForm)
+        url = list_.get_absolute_url()
+        response = self.client.get(url)
+        self.assertIsInstance(response.context['form'], ExistingListItemForm)
         self.assertContains(response, 'name="text"')
 
     def post_invalid_input(self):
         list_ = List.objects.create()
+        url = list_.get_absolute_url()
         return self.client.post(
-            f'/lists/{list_.id}/',
+            url,
             {'text':''}
         )
         
@@ -102,14 +104,14 @@ class ListViewTest(TestCase):
         expected_error = escape(EMPTY_ITEM_ERROR)
         self.assertContains(response, expected_error)
 
-    @skip
     def test_duplicate_item_validation_error_end_up_on_the_list_page(self):
         list_ = List.objects.create()
         url = list_.get_absolute_url()
         self.client.post(url, {'text': 'Sample'})
         response = self.client.post(url, {'text': 'Sample'})
 
-        self.assertContains(response, DUPLICATE_ITEM_ERROR)
+        expected_error = escape(DUPLICATE_ITEM_ERROR)
+        self.assertContains(response, expected_error)
         self.assertTemplateUsed(response, 'list.html')
         self.assertEqual(Item.objects.count(), 1)
 
