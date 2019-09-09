@@ -3,7 +3,8 @@ from django.urls import resolve
 from django.http import HttpRequest
 from lists.models import Item,List
 from django.utils.html import escape
-from lists.forms import ItemForm, EMPTY_ITEM_ERROR
+from lists.forms import ItemForm, EMPTY_ITEM_ERROR, DUPLICATE_ITEM_ERROR
+from unittest import skip
 
 class HomePageTest(TestCase):
     def test_uses_home_template(self):
@@ -100,6 +101,17 @@ class ListViewTest(TestCase):
         response = self.post_invalid_input()
         expected_error = escape(EMPTY_ITEM_ERROR)
         self.assertContains(response, expected_error)
+
+    @skip
+    def test_duplicate_item_validation_error_end_up_on_the_list_page(self):
+        list_ = List.objects.create()
+        url = list_.get_absolute_url()
+        self.client.post(url, {'text': 'Sample'})
+        response = self.client.post(url, {'text': 'Sample'})
+
+        self.assertContains(response, DUPLICATE_ITEM_ERROR)
+        self.assertTemplateUsed(response, 'list.html')
+        self.assertEqual(Item.objects.count(), 1)
 
 
 class NewListTest(TestCase):
