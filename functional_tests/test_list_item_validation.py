@@ -4,6 +4,9 @@ from unittest import skip
 
 
 class ItemValidationTest(FunctionalTest):
+    def get_error_item(self):
+        return self.browser.find_element_by_css_selector('.has-error')
+
     def test_cannot_add_empty_list_items(self):
         # Archak goes to home page and accidently tries to submit an empty list item
         # He hits Enter on the empty list item
@@ -51,6 +54,25 @@ class ItemValidationTest(FunctionalTest):
         textbox.send_keys(Keys.ENTER)
 
         self.wait_for(lambda: self.assertEqual(
-            self.browser.find_element_by_css_selector('.has-error').text,
+            self.get_error_item().text,
             "You've already got this in your list"))
 
+    def test_error_messages_are_cleared_on_input(self):
+        self.browser.get(self.live_server_url)
+        textbox = self.browser.find_element_by_id('id_new_item')
+        textbox.send_keys('Buy Milk')
+        textbox.send_keys(Keys.ENTER)
+        self.wait_and_check_list_in_table('1: Buy Milk')
+        textbox = self.browser.find_element_by_id('id_new_item')
+        textbox.send_keys('Buy Milk')
+        textbox.send_keys(Keys.ENTER)
+
+        self.wait_for(lambda: self.assertTrue(
+            self.get_error_item().is_displayed()
+        ))
+
+        textbox = self.browser.find_element_by_id('id_new_item')
+        textbox.send_keys('Buy kerosene')
+        self.wait_for(lambda: self.assertFalse(
+            self.get_error_item().is_displayed()
+        ))
