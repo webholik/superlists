@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{$ static 'base.css' %}" rel="stylesheet">
+    <link href="{% static 'base.css' %}" rel="stylesheet">
     <title>To-Do lists</title>
 </head>
 
@@ -35,7 +35,14 @@
             </div>
         </div>
     </div>
-        
+    
+    <script src='{% static "jquery.js" %}'></script>
+    <script src='{% static "list.js" %}'></script>
+    <script>
+        $(document).ready(function () {
+            initialize();
+        });
+    </script>
 </body>
 
 </html>
